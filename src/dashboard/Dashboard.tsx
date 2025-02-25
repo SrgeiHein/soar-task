@@ -11,6 +11,13 @@ import {
   ArcElement,
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
+import DataLabels from "chartjs-plugin-datalabels";
+import {
+  weeklyData,
+  expenseData,
+  barOptions,
+  pieOptions,
+} from "../mock/chartMock";
 
 ChartJS.register(
   CategoryScale,
@@ -19,98 +26,27 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
+  DataLabels
 );
 
 const Dashboard: React.FC = () => {
-  const weeklyData = {
-    labels: ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
-    datasets: [
-      {
-        label: "Withdraw",
-        data: [450, 320, 300, 450, 160, 350, 400],
-        backgroundColor: "#343C6A",
-        borderRadius: 20,
-        barThickness: 20,
-      },
-      {
-        label: "Deposit",
-        data: [200, 150, 220, 300, 200, 250, 300],
-        backgroundColor: "#4D78FF",
-        borderRadius: 20,
-        barThickness: 20,
-      },
-    ],
-  };
-
-  const expenseData = {
-    labels: ["Entertainment", "Bill Expenses", "Investment", "Others"],
-    datasets: [
-      {
-        data: [30, 15, 20, 35],
-        backgroundColor: ["#343C6A", "#FF8F6B", "#4D78FF", "#1C1C1C"],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const barOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-        labels: {
-          usePointStyle: true,
-          pointStyle: "circle",
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        grid: {
-          color: "#EAEAEA",
-        },
-        ticks: {
-          stepSize: 100,
-        },
-      },
-    },
-  };
-
-  const pieOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "right" as const,
-        labels: {
-          usePointStyle: true,
-          pointStyle: "circle",
-        },
-      },
-    },
-  };
-
   return (
     <div className="p-6 bg-[#F3F3F3] h-full overflow-y-auto overflow-x-hidden">
-      <div className="flex gap-[30px] pb-4">
-        <div className="flex-[2]">
+      <div className="flex flex-col lg:flex-row gap-[30px] pb-4">
+        <div className="w-full lg:flex-[2]">
           <div className="flex items-center justify-between mb-6 px-2">
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               My Cards
             </h2>
-            <h2 className="text-[17px] font-semibold text-[#343C6A]">
+            <h2 className="text-[17px] font-semibold text-[#343C6A] hidden lg:block">
               See All
             </h2>
           </div>
 
-          <div className="flex justify-between gap-[30px]">
+          <div className="flex flex-col lg:flex-row justify-between  gap-[30px]">
             <div
-              className="min-w-[350px] h-[235px] rounded-2xl pt-6 text-white relative overflow-hidden font-lato flex flex-col"
+              className="min-w-[360px] h-[235px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col"
               style={{
                 background:
                   "linear-gradient(107.38deg, #5B5A6F 2.61%, #000000 101.2%)",
@@ -158,7 +94,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="h-[235px] min-w-[350px] rounded-2xl pt-6 text-white relative overflow-hidden font-lato flex flex-col bg-white border border-[#DFEAF2]">
+            <div className="h-[235px] min-w-[360px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col bg-white border border-[#DFEAF2]">
               <div className="flex justify-between items-start mb-8 px-6">
                 <div>
                   <p className="text-[12px] mb-0 text-[#718EBF]">Balance</p>
@@ -196,13 +132,13 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex-1">
+        <div className="w-full lg:flex-1">
           <div className="flex items-center justify-between mb-6 px-2">
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               Recent Transaction
             </h2>
           </div>
-          <div className="h-[235px] min-w-[320px] rounded-2xl bg-white border border-[#DFEAF2] p-6 font-lato">
+          <div className="h-[235px] w-full lg:min-w-[320px] rounded-2xl bg-white border border-[#DFEAF2] p-6 font-lato">
             {/* Transaction Items */}
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -269,27 +205,34 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div>
-        <div className="flex gap-[30px] mb-6 px-2">
-          <div className="flex-[2]">
+        <div className="flex flex-col lg:flex-row gap-[30px] mb-6 px-2">
+          <div className="lg:flex-[2]">
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               Weekly Activity
             </h2>
           </div>
-          <div className="flex-1">
+          <div className="lg:flex-1 hidden lg:block">
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               Expense Statistics
             </h2>
           </div>
         </div>
 
-        <div className="flex gap-[30px]">
-          <div className="flex-[2] bg-white rounded-2xl pl-6">
-            <div className="h-[300px]">
+        <div className="flex flex-col lg:flex-row lg:gap-[30px]">
+          <div className="lg:flex-[2] bg-white rounded-2xl pl-6 pt-6">
+            <div className="h-[322px]">
               <Bar options={barOptions} data={weeklyData} />
             </div>
           </div>
-          <div className="flex-1 bg-white rounded-2xl pl-6">
-            <div className="h-[300px] flex items-center justify-center">
+
+          <div className="block lg:hidden">
+            <h2 className="text-[22px] font-semibold text-[#343C6A] mt-8 mb-6">
+              Expense Statistics
+            </h2>
+          </div>
+
+          <div className="lg:flex-1 bg-white rounded-2xl pl-6 pt-6">
+            <div className="h-[322px] flex items-center justify-center">
               <Pie options={pieOptions} data={expenseData} />
             </div>
           </div>
