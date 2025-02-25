@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import MainContent from './components/MainContent';
+import React, { useState } from "react";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./dashboard/Dashboard";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -18,8 +18,8 @@ function App() {
     <div className="flex h-screen bg-gray-50">
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onMenuClick={toggleSidebar} />
-        <MainContent />
+        <Header onMenuClick={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+        <Dashboard />
       </div>
     </div>
   );
