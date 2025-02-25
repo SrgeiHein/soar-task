@@ -1,0 +1,12 @@
+export { default as HomeIcon } from './HomeIcon';
+export { default as AccountIcon } from './AccountIcon';
+export { default as CreditCardIcon } from './CreditCardIcon';
+export { default as EconometricsIcon } from './EconometricsIcon';
+export { default as InvestmentIcon } from './InvestmentIcon';
+export { default as LoanIcon } from './LoanIcon';
+export { default as ServiceIcon } from './ServiceIcon';
+export { default as SettingIcon } from './SettingIcon';
+export { default as TransferIcon } from './TransferIcon';
+export { default as LogoIcon } from './LogoIcon';
+export { default as NotificationIcon } from './NotificationIcon';
+export { default as MenuIcon } from './MenuIcon';
