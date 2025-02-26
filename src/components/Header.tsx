@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { NotificationIcon, SettingIcon, MenuIcon } from "./icons";
 
 interface HeaderProps {
@@ -7,6 +8,31 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick, isSidebarOpen }) => {
+  const location = useLocation();
+
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case "/":
+        return "Overview";
+      case "/transactions":
+        return "Transactions";
+      case "/accounts":
+        return "Accounts";
+      case "/investments":
+        return "Investments";
+      case "/credit-cards":
+        return "Credit Cards";
+      case "/loans":
+        return "Loans";
+      case "/services":
+        return "Services";
+      case "/settings":
+        return "Settings";
+      default:
+        return "Overview";
+    }
+  };
+
   return (
     <header className="bg-white">
       <div className="flex flex-col">
@@ -20,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isSidebarOpen }) => {
               <MenuIcon className="w-6 h-6" />
             </button>
             <span className="text-[#343C6A] text-[28px] max-[550px]:text-[20px] font-semibold max-[550px]:absolute max-[550px]:left-1/2 max-[550px]:-translate-x-1/2">
-              Overview
+              {getPageTitle()}
             </span>
           </div>
 

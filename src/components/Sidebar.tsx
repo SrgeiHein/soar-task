@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   HomeIcon,
   AccountIcon,
@@ -14,46 +15,63 @@ import {
 interface NavItem {
   icon: React.ReactNode;
   label: string;
-  isActive?: boolean;
+  path: string;
 }
 
 const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
   isOpen,
   onClose,
 }) => {
+  const location = useLocation();
+
+  const getIcon = (
+    Icon: React.ComponentType<{ className?: string; fill?: string }>,
+    path: string
+  ) => {
+    const isActive = location.pathname === path;
+    return <Icon className="w-6 h-6" fill={isActive ? "#232323" : "#B1B1B1"} />;
+  };
+
   const navItems: NavItem[] = [
     {
-      icon: <HomeIcon className="w-6 h-6" />,
+      icon: getIcon(HomeIcon, "/"),
       label: "Dashboard",
-      isActive: true,
+      path: "/",
     },
     {
-      icon: <TransferIcon className="w-6 h-6" />,
+      icon: getIcon(TransferIcon, "/transactions"),
       label: "Transactions",
+      path: "/transactions",
     },
     {
-      icon: <AccountIcon className="w-6 h-6" />,
+      icon: getIcon(AccountIcon, "/accounts"),
       label: "Accounts",
+      path: "/accounts",
     },
     {
-      icon: <InvestmentIcon className="w-6 h-6" />,
+      icon: getIcon(InvestmentIcon, "/investments"),
       label: "Investments",
+      path: "/investments",
     },
     {
-      icon: <CreditCardIcon className="w-6 h-6" />,
+      icon: getIcon(CreditCardIcon, "/credit-cards"),
       label: "Credit Cards",
+      path: "/credit-cards",
     },
     {
-      icon: <LoanIcon className="w-6 h-6" />,
+      icon: getIcon(LoanIcon, "/loans"),
       label: "Loans",
+      path: "/loans",
     },
     {
-      icon: <ServiceIcon className="w-6 h-6" />,
+      icon: getIcon(ServiceIcon, "/services"),
       label: "Services",
+      path: "/services",
     },
     {
-      icon: <SettingIcon className="w-6 h-6" />,
-      label: "Setting",
+      icon: getIcon(SettingIcon, "/settings"),
+      label: "Settings",
+      path: "/settings",
     },
   ];
 
@@ -81,22 +99,23 @@ const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 
           <nav>
             {navItems.map((item, index) => (
-              <a
+              <Link
                 key={index}
-                href="#"
+                to={item.path}
+                onClick={() => {
+                  if (window.innerWidth < 900) {
+                    onClose();
+                  }
+                }}
                 className={`flex items-center space-x-3 py-3 rounded-lg mb-1 ${
-                  item.isActive
-                    ? "text-black"
+                  location.pathname === item.path
+                    ? "text-[#232323]"
                     : "text-[#B1B1B1] hover:bg-gray-100"
                 }`}
               >
-                <span
-                  className={item.isActive ? "text-black" : "text-[#B1B1B1]"}
-                >
-                  {item.icon}
-                </span>
-                <span className="font-medium pl-5">{item.label}</span>
-              </a>
+                {item.icon}
+                <span className="font-semibold pl-5">{item.label}</span>
+              </Link>
             ))}
           </nav>
         </div>
