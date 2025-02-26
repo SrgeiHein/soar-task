@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CardIcon, CardIcon2 } from "../components/icons";
+import { Card, Transaction, WeeklyActivityData, ExpenseData, BalanceHistoryData } from "../types/dashboard";
+import { api } from "../services/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -36,9 +38,15 @@ ChartJS.register(
   DataLabels
 );
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
+  const [cards, setCards] = useState<Card[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [weeklyActivity, setWeeklyActivity] = useState<WeeklyActivityData | null>(null);
+  const [expenseStats, setExpenseStats] = useState<ExpenseData | null>(null);
+  const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryData | null>(null);
   const users = [
     { name: "Livia Bator", role: "CEO", image: "/assets/talyor.png" },
     { name: "Randy Press", role: "Director", image: "/assets/randy.png" },
@@ -46,6 +54,31 @@ const Dashboard: React.FC = () => {
     { name: "Sarah Parker", role: "Developer", image: "/assets/work.png" },
     { name: "Mike Johnson", role: "Manager", image: "/assets/talyor.png" },
   ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [cardsData, transactionsData, weeklyData, expenseData, balanceData] = await Promise.all([
+          api.getCards(),
+          api.getRecentTransactions(),
+          api.getWeeklyActivity(),
+          api.getExpenseStats(),
+          api.getBalanceHistory(),
+        ]);
+        setCards(cardsData);
+        setTransactions(transactionsData);
+        setWeeklyActivity(weeklyData);
+        setExpenseStats(expenseData);
+        setBalanceHistory(balanceData);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleNext = () => {
     if (isAnimating) return;
@@ -63,7 +96,7 @@ const Dashboard: React.FC = () => {
   });
 
   return (
-    <div className="p-6 bg-[#F3F3F3] h-full overflow-auto">
+    <div className=" p-6 bg-[#F3F3F3] h-full overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col lg:flex-row gap-[30px] pb-4">
         <div className="w-full lg:flex-[2]">
           <div className="flex items-center justify-between mb-6 px-2">
@@ -75,92 +108,104 @@ const Dashboard: React.FC = () => {
             </h2>
           </div>
 
-          <div className="flex flex-col lg:flex-row justify-between  gap-[30px]">
-            <div
-              className="min-w-[350px] h-[235px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col"
-              style={{
-                background:
-                  "linear-gradient(107.38deg, #5B5A6F 2.61%, #000000 101.2%)",
-              }}
-            >
-              <div className="flex justify-between items-start mb-8 px-6">
-                <div>
-                  <p className="text-[12px] mb-0 text-white">Balance</p>
-                  <p className="text-[20px] font-semibold">$5,756</p>
-                </div>
-                <img
-                  src="/assets/Chip_Card.png"
-                  alt="Chip"
-                  className="w-8 h-8"
-                />
-              </div>
-              <div className="flex justify-stretch items-start mb-7 px-6">
-                <div>
-                  <p className="text-[12px] text-white opacity-70">
-                    CARD HOLDER
-                  </p>
-                  <p className="font-semibold text-[15px] mt-0">Eddy Cusuma</p>
-                </div>
-                <div>
-                  <p className="text-[12px] text-white opacity-70">
-                    VALID THRU
-                  </p>
-                  <p className="font-semibold text-[15px] mt-0">12/22</p>
-                </div>
-              </div>
-
-              <div className="w-full h-[1px] bg-white opacity-20"></div>
-
+          <div className="flex flex-col lg:flex-row justify-between gap-[30px]">
+            {cards.map((card) => (
               <div
-                style={{
-                  background:
-                    "linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%)",
-                }}
-                className="flex items-center justify-between px-6 flex-grow py-4"
+                key={card.id}
+                className={`min-w-[350px] h-[235px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col ${
+                  card.isLight
+                    ? "bg-white border border-[#DFEAF2]"
+                    : "bg-gradient-to-r from-[#5B5A6F] to-black"
+                }`}
               >
-                <p className="font-semibold text-[22px] text-white">
-                  3778 **** **** 1234
-                </p>
-                <CardIcon className="opacity-50" />
-              </div>
-            </div>
+                <div className="flex justify-between items-start mb-8 px-6">
+                  <div>
+                    <p
+                      className={`text-[12px] mb-0 ${
+                        card.isLight ? "text-[#718EBF]" : "text-white"
+                      }`}
+                    >
+                      Balance
+                    </p>
+                    <p
+                      className={`text-[20px] font-semibold ${
+                        card.isLight ? "text-[#343C6A]" : "text-white"
+                      }`}
+                    >
+                      ${card.balance.toLocaleString()}
+                    </p>
+                  </div>
+                  <img
+                    src={
+                      card.isLight
+                        ? "/assets/Chip_Card2.png"
+                        : "/assets/Chip_Card.png"
+                    }
+                    alt="Chip"
+                    className="w-8 h-8"
+                  />
+                </div>
+                <div className="flex justify-stretch items-start mb-7 px-6">
+                  <div>
+                    <p
+                      className={`text-[12px] ${
+                        card.isLight
+                          ? "text-[#718EBF]"
+                          : "text-white opacity-70"
+                      }`}
+                    >
+                      CARD HOLDER
+                    </p>
+                    <p
+                      className={`font-semibold text-[15px] mt-0 ${
+                        card.isLight ? "text-[#343C6A]" : "text-white"
+                      }`}
+                    >
+                      {card.cardHolder}
+                    </p>
+                  </div>
+                  <div>
+                    <p
+                      className={`text-[12px] ${
+                        card.isLight
+                          ? "text-[#718EBF]"
+                          : "text-white opacity-70"
+                      }`}
+                    >
+                      VALID THRU
+                    </p>
+                    <p
+                      className={`font-semibold text-[15px] mt-0 ${
+                        card.isLight ? "text-[#343C6A]" : "text-white"
+                      }`}
+                    >
+                      {card.validThru}
+                    </p>
+                  </div>
+                </div>
 
-            <div className="h-[235px] min-w-[350px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col bg-white border border-[#DFEAF2]">
-              <div className="flex justify-between items-start mb-8 px-6">
-                <div>
-                  <p className="text-[12px] mb-0 text-[#718EBF]">Balance</p>
-                  <p className="text-[20px] font-semibold text-[#343C6A]">
-                    $5,756
+                <div
+                  className={`flex items-center justify-between px-6 flex-grow py-4 ${
+                    card.isLight
+                      ? "bg-white border-t border-[#DFEAF2]"
+                      : "bg-gradient-to-b from-white/15 to-transparent"
+                  }`}
+                >
+                  <p
+                    className={`font-semibold text-[22px] ${
+                      card.isLight ? "text-[#343C6A]" : "text-white"
+                    }`}
+                  >
+                    {card.cardNumber}
                   </p>
-                </div>
-                <img
-                  src="/assets/Chip_Card2.png"
-                  alt="Chip"
-                  className="w-8 h-8"
-                />
-              </div>
-              <div className="flex justify-stretch items-start mb-7 px-6">
-                <div>
-                  <p className="text-[12px] text-[#718EBF]">CARD HOLDER</p>
-                  <p className="font-semibold text-[15px] text-[#343C6A] mt-0">
-                    Eddy Cusuma
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[12px] text-[#718EBF]">VALID THRU</p>
-                  <p className="font-semibold text-[15px] text-[#343C6A] mt-0">
-                    12/22
-                  </p>
+                  {card.isLight ? (
+                    <CardIcon2 className="opacity-50" />
+                  ) : (
+                    <CardIcon className="opacity-50" />
+                  )}
                 </div>
               </div>
-
-              <div className="flex items-center justify-between px-6 bg-white flex-grow py-4 border-t border-[#DFEAF2]">
-                <p className="font-semibold text-[22px] text-[#343C6A]">
-                  3778 **** **** 1234
-                </p>
-                <CardIcon2 className="opacity-50" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
         <div className="w-full lg:flex-1">
@@ -170,68 +215,42 @@ const Dashboard: React.FC = () => {
             </h2>
           </div>
           <div className="h-[235px] w-full lg:min-w-[350px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
-            {/* Transaction Items */}
             <div className="space-y-4">
-              <div className="flex items-center gap-5 mb-5">
-                <img
-                  src="/assets/card.png"
-                  alt="Deposit"
-                  className="w-12 h-12"
-                />
+              {transactions.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center gap-5 mb-5"
+                >
+                  <img
+                    src={transaction.icon}
+                    alt={transaction.title}
+                    className="w-12 h-12"
+                  />
 
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold text-[16px] text-[#232323]">
-                        Deposit from my Card
-                      </p>
-                      <p className="font-[15px] text-[#718EBF]">
-                        28 January 2021
-                      </p>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-semibold text-[16px] text-[#232323]">
+                          {transaction.title}
+                        </p>
+                        <p className="font-[15px] text-[#718EBF]">
+                          {transaction.date}
+                        </p>
+                      </div>
+                      <span
+                        className={`${
+                          transaction.amount > 0
+                            ? "text-[#41D4A8]"
+                            : "text-[#FF4B4A]"
+                        } font-semibold`}
+                      >
+                        {transaction.amount > 0 ? "+" : ""}$
+                        {Math.abs(transaction.amount).toLocaleString()}
+                      </span>
                     </div>
-                    <span className="text-[#FF4B4A] font-semibold">-$850</span>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-5 mb-5">
-                <img
-                  src="/assets/paypal.png"
-                  alt="PayPal"
-                  className="w-12 h-12"
-                />
-
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold text-[16px] text-[#232323]">
-                        Deposit Paypal
-                      </p>
-                      <p className="font-[15px] text-[#718EBF]">
-                        25 January 2021
-                      </p>
-                    </div>
-                    <span className="text-[#41D4A8] ">+$2,500</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-5">
-                <img src="/assets/coin.png" alt="User" className="w-12  h-12" />
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold text-[16px] text-[#232323]">
-                        Jemi Wilson
-                      </p>
-                      <p className="font-[15px] text-[#718EBF]">
-                        21 January 2021
-                      </p>
-                    </div>
-                    <span className="text-[#41D4A8]">+$5,400</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -254,7 +273,7 @@ const Dashboard: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:gap-[30px]">
           <div className="lg:flex-[2] bg-white rounded-2xl pl-6 pt-6">
             <div className="h-[322px]">
-              <Bar options={barOptions} data={weeklyData} />
+              <Bar options={barOptions} data={weeklyActivity || weeklyData} />
             </div>
           </div>
 
@@ -266,7 +285,7 @@ const Dashboard: React.FC = () => {
 
           <div className="lg:flex-1 bg-white rounded-2xl pl-6 pt-6">
             <div className="h-[322px] flex items-center justify-center">
-              <Pie options={pieOptions} data={expenseData} />
+              <Pie options={pieOptions} data={expenseStats || expenseData} />
             </div>
           </div>
         </div>
@@ -368,7 +387,7 @@ const Dashboard: React.FC = () => {
           </h2>
           <div className="w-full bg-white rounded-2xl p-6 max-h-[276px]">
             <div className="h-[200px]">
-              <Line options={balanceHistoryOptions} data={balanceHistoryData} />
+              <Line options={balanceHistoryOptions} data={balanceHistory || balanceHistoryData} />
             </div>
           </div>
         </div>
