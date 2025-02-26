@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <div className="flex-1">
         <Header onMenuClick={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        <main className="p-4 lg:p-0">{children}</main>
+        <main className="p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );
