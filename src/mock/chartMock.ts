@@ -118,6 +118,7 @@ export const barOptions = {
 
 export const pieOptions = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       display: false,

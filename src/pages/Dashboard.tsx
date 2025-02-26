@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { CardIcon, CardIcon2 } from "../components/icons";
-import { Card, Transaction, WeeklyActivityData, ExpenseData, BalanceHistoryData } from "../types/dashboard";
+import { SendIcon } from "../components/icons/SendIcon";
+import {
+  Card,
+  Transaction,
+  WeeklyActivityData,
+  ExpenseData,
+  BalanceHistoryData,
+  TransferUser,
+  TransferResponse,
+} from "../types/dashboard";
 import { api } from "../services/api";
 import {
   Chart as ChartJS,
@@ -41,39 +50,52 @@ ChartJS.register(
 const Dashboard = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [weeklyActivity, setWeeklyActivity] = useState<WeeklyActivityData | null>(null);
+  const [weeklyActivity, setWeeklyActivity] =
+    useState<WeeklyActivityData | null>(null);
   const [expenseStats, setExpenseStats] = useState<ExpenseData | null>(null);
-  const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryData | null>(null);
-  const users = [
+  const [balanceHistory, setBalanceHistory] =
+    useState<BalanceHistoryData | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [amount, setAmount] = useState<string>("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [transferUsers, setTransferUsers] = useState<TransferUser[]>([
     { name: "Livia Bator", role: "CEO", image: "/assets/talyor.png" },
     { name: "Randy Press", role: "Director", image: "/assets/randy.png" },
     { name: "Workman", role: "Designer", image: "/assets/work.png" },
     { name: "Sarah Parker", role: "Developer", image: "/assets/work.png" },
     { name: "Mike Johnson", role: "Manager", image: "/assets/talyor.png" },
-  ];
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [cardsData, transactionsData, weeklyData, expenseData, balanceData] = await Promise.all([
+        const [
+          cardsData,
+          transactionsData,
+          weeklyData,
+          expenseData,
+          balanceData,
+          usersData,
+        ] = await Promise.all([
           api.getCards(),
           api.getRecentTransactions(),
           api.getWeeklyActivity(),
           api.getExpenseStats(),
           api.getBalanceHistory(),
+          api.getTransferUsers(),
         ]);
+
         setCards(cardsData);
         setTransactions(transactionsData);
         setWeeklyActivity(weeklyData);
         setExpenseStats(expenseData);
         setBalanceHistory(balanceData);
+        setTransferUsers(usersData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -84,15 +106,47 @@ const Dashboard = () => {
     if (isAnimating) return;
     setIsAnimating(true);
     setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1 >= users.length ? 0 : prev + 1));
+      setCurrentIndex((prev) =>
+        prev + 1 >= transferUsers.length ? 0 : prev + 1
+      );
       setIsAnimating(false);
     }, 300);
   };
 
+  const handleUserSelect = (userName: string) => {
+    setSelectedUser(userName === selectedUser ? null : userName);
+  };
+
+  const handleSendMoney = async () => {
+    if (!selectedUser || !amount) return;
+
+    try {
+      const response = await api.sendTransfer(selectedUser, amount);
+      if (response.success) {
+        setSuccessMessage(response.message);
+        setShowSuccess(true);
+        setAmount("");
+        setSelectedUser(null);
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          setShowSuccess(false);
+          setSuccessMessage("");
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error sending money:", error);
+    }
+  };
+
+  const handleSeeAll = () => {
+    console.log("See all clicked");
+  };
+
   // Get exactly 3 users starting from current index
   const visibleUsers = Array.from({ length: 3 }, (_, i) => {
-    const index = (currentIndex + i) % users.length;
-    return users[index];
+    const index = (currentIndex + i) % transferUsers.length;
+    return transferUsers[index];
   });
 
   return (
@@ -103,7 +157,10 @@ const Dashboard = () => {
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               My Cards
             </h2>
-            <h2 className="text-[17px] font-semibold text-[#343C6A] hidden lg:block">
+            <h2
+              onClick={handleSeeAll}
+              className="text-[17px] font-semibold text-[#343C6A] hidden lg:block cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95"
+            >
               See All
             </h2>
           </div>
@@ -318,28 +375,42 @@ const Dashboard = () => {
                       isAnimating ? "animate-slideNext" : ""
                     }`}
                   >
-                    {visibleUsers.map((user, index) => (
-                      <div
-                        key={user.name + index}
-                        className="flex flex-col items-center gap-2 w-[120px]"
-                      >
-                        <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
-                          <img
-                            src={user.image}
-                            alt={user.name}
-                            className="w-full h-full object-cover"
-                          />
+                    {transferUsers.length > 0 &&
+                      visibleUsers.map((user, index) => (
+                        <div
+                          key={user.name + index}
+                          className="flex flex-col items-center gap-2 w-[120px] cursor-pointer"
+                          onClick={() => handleUserSelect(user.name)}
+                        >
+                          <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
+                            <img
+                              src={user.image}
+                              alt={user.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="text-center">
+                            <p
+                              className={`text-[16px] text-[#232323] ${
+                                selectedUser === user.name
+                                  ? "font-extrabold"
+                                  : "font-medium"
+                              }`}
+                            >
+                              {user.name}
+                            </p>
+                            <p
+                              className={`text-[15px] text-[#718EBF] ${
+                                selectedUser === user.name
+                                  ? "font-semibold"
+                                  : ""
+                              }`}
+                            >
+                              {user.role}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-center">
-                          <p className="text-[15px] font-semibold text-[#343C6A]">
-                            {user.name}
-                          </p>
-                          <p className="text-[13px] text-[#718EBF]">
-                            {user.role}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                   <button
                     onClick={handleNext}
@@ -363,23 +434,29 @@ const Dashboard = () => {
                       <div className="flex-1 -mr-24">
                         <input
                           type="text"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
                           placeholder="525.50"
                           className="w-full bg-[#F3F4F6] rounded-[30px] pl-6 pr-32 py-3.5 text-[15px] text-[#343C6A] focus:outline-none"
                         />
                       </div>
-                      <button className="bg-[#1B1D21] text-white rounded-[30px] px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-[#2a2d33] transition-colors">
+                      <button
+                        onClick={handleSendMoney}
+                        className={`bg-[#1B1D21] text-white rounded-[30px] px-8 py-3.5 flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[#2a2d33] hover:scale-105 active:scale-95`}
+                      >
                         Send
-                        <img
-                          src="/assets/send.svg"
-                          alt="send"
-                          className="w-4 h-4"
-                        />
+                        <SendIcon className="w-6 h-6 text-white" />
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            {showSuccess && (
+              <div className="mt-4 text-center text-green-600 font-medium animate-fade-in">
+                {successMessage}
+              </div>
+            )}
           </div>
 
           <h2 className="lg:hidden text-[22px] font-semibold text-[#343C6A] font-inter mb-6 mt-6 px-2">
@@ -387,7 +464,10 @@ const Dashboard = () => {
           </h2>
           <div className="w-full bg-white rounded-2xl p-6 max-h-[276px]">
             <div className="h-[200px]">
-              <Line options={balanceHistoryOptions} data={balanceHistory || balanceHistoryData} />
+              <Line
+                options={balanceHistoryOptions}
+                data={balanceHistory || balanceHistoryData}
+              />
             </div>
           </div>
         </div>

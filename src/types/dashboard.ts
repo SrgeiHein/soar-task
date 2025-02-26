@@ -49,3 +49,14 @@ export interface BalanceHistoryData {
     borderWidth: number;
   }[];
 }
+
+export interface TransferUser {
+  name: string;
+  role: string;
+  image: string;
+}
+
+export interface TransferResponse {
+  success: boolean;
+  message: string;
+}

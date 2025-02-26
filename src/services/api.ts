@@ -1,5 +1,14 @@
-import { Card, Transaction, WeeklyActivityData, ExpenseData, BalanceHistoryData } from "../types/dashboard";
+import {
+  Card,
+  Transaction,
+  WeeklyActivityData,
+  ExpenseData,
+  BalanceHistoryData,
+  TransferUser,
+  TransferResponse,
+} from "../types/dashboard";
 import { weeklyData, expenseData, balanceHistoryData } from "../mock/chartMock";
+import { mockTransferUsers } from "../mock/transferMock";
 
 const mockCards: Card[] = [
   {
@@ -66,4 +75,29 @@ export const api = {
   getBalanceHistory: async (): Promise<BalanceHistoryData> => {
     return balanceHistoryData;
   },
+
+  getTransferUsers: async (): Promise<TransferUser[]> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockTransferUsers;
+  },
+
+  sendTransfer: async (recipient: string, amount: string): Promise<TransferResponse> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Validate amount
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      return {
+        success: false,
+        message: "Invalid amount"
+      };
+    }
+
+    return {
+      success: true,
+      message: `Successfully sent ${amount} to ${recipient}`
+    };
+  }
 };
