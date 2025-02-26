@@ -17,14 +17,15 @@ export interface Transaction {
 }
 
 export interface WeeklyActivityData {
-  labels: string[];
-  datasets: {
-    label: string;
-    data: number[];
-    backgroundColor: string;
-    borderRadius?: number;
-    barThickness?: number;
-  }[];
+  data: Array<{
+    name: string;
+    deposit: number;
+    withdraw: number;
+  }>;
+  colors: {
+    deposit: string;
+    withdraw: string;
+  };
 }
 
 export interface ExpenseData {

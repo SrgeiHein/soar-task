@@ -12,40 +12,23 @@ import {
 } from "../types/dashboard";
 import { api } from "../services/api";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
   Legend,
-  ArcElement,
-  LineElement,
-  PointElement,
-} from "chart.js";
-import { Bar, Pie, Line } from "react-chartjs-2";
-import DataLabels from "chartjs-plugin-datalabels";
-import {
-  weeklyData,
-  expenseData,
-  barOptions,
-  pieOptions,
-  balanceHistoryData,
-  balanceHistoryOptions,
-} from "../mock/chartMock";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  DataLabels
-);
+  PieChart,
+  Pie,
+  Sector,
+  LineChart,
+  Line,
+  Area,
+} from "recharts";
+import { weeklyData, expenseData, balanceHistoryData } from "../mock/chartMock";
+import { mockTransferUsers } from "../mock/transferMock";
+import { barChartConfig, pieChartConfig } from "../config/chartConfig";
 
 const Dashboard = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -61,13 +44,8 @@ const Dashboard = () => {
   const [amount, setAmount] = useState<string>("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [transferUsers, setTransferUsers] = useState<TransferUser[]>([
-    { name: "Livia Bator", role: "CEO", image: "/assets/talyor.png" },
-    { name: "Randy Press", role: "Director", image: "/assets/randy.png" },
-    { name: "Workman", role: "Designer", image: "/assets/work.png" },
-    { name: "Sarah Parker", role: "Developer", image: "/assets/work.png" },
-    { name: "Mike Johnson", role: "Manager", image: "/assets/talyor.png" },
-  ]);
+  const [transferUsers, setTransferUsers] =
+    useState<TransferUser[]>(mockTransferUsers);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -330,7 +308,55 @@ const Dashboard = () => {
         <div className="flex flex-col lg:flex-row lg:gap-[30px]">
           <div className="lg:flex-[2] bg-white rounded-2xl pl-6 pt-6">
             <div className="h-[322px]">
-              <Bar options={barOptions} data={weeklyActivity || weeklyData} />
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={weeklyActivity?.data || weeklyData.data}
+                  margin={barChartConfig.chart.margin}
+                  barSize={barChartConfig.chart.barSize}
+                  barGap={barChartConfig.chart.barGap}
+                >
+                  <CartesianGrid
+                    strokeDasharray={barChartConfig.grid.strokeDasharray}
+                    vertical={barChartConfig.grid.vertical}
+                    stroke={barChartConfig.grid.stroke}
+                  />
+                  <XAxis
+                    dataKey={barChartConfig.xAxis.dataKey}
+                    axisLine={barChartConfig.xAxis.axisLine}
+                    tickLine={barChartConfig.xAxis.tickLine}
+                    tick={barChartConfig.xAxis.tick}
+                    padding={barChartConfig.xAxis.padding}
+                  />
+                  <YAxis
+                    axisLine={barChartConfig.yAxis.axisLine}
+                    tickLine={barChartConfig.yAxis.tickLine}
+                    tick={barChartConfig.yAxis.tick}
+                    domain={barChartConfig.yAxis.domain}
+                    ticks={barChartConfig.yAxis.ticks}
+                  />
+                  <Legend
+                    verticalAlign={barChartConfig.legend.verticalAlign}
+                    align={barChartConfig.legend.align}
+                    iconType={barChartConfig.legend.iconType}
+                    iconSize={barChartConfig.legend.iconSize}
+                    wrapperStyle={barChartConfig.legend.wrapperStyle}
+                    formatter={(value, entry) => (
+                      <span style={{ marginRight: barChartConfig.legend.gap }}>
+                        {value}
+                      </span>
+                    )}
+                  />
+                  {barChartConfig.bars.map((bar) => (
+                    <Bar
+                      key={bar.dataKey}
+                      dataKey={bar.dataKey}
+                      name={bar.name}
+                      fill={weeklyData.colors[bar.dataKey]}
+                      radius={bar.radius}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
@@ -342,7 +368,117 @@ const Dashboard = () => {
 
           <div className="lg:flex-1 bg-white rounded-2xl pl-6 pt-6">
             <div className="h-[322px] flex items-center justify-center">
-              <Pie options={pieOptions} data={expenseStats || expenseData} />
+              <PieChart
+                width={pieChartConfig.width}
+                height={pieChartConfig.height}
+              >
+                <Pie
+                  data={
+                    expenseStats?.datasets?.[0]?.data.map((value, index) => ({
+                      percentage: `${value}%`,
+                      name: expenseStats.labels[index],
+                      value,
+                      fill: expenseStats.datasets[0].backgroundColor[index],
+
+                      offset: pieChartConfig.offset[index],
+                    })) ||
+                    expenseData.datasets[0].data.map((value, index) => ({
+                      percentage: `${value}%`,
+                      name: expenseData.labels[index],
+                      value,
+                      fill: expenseData.datasets[0].backgroundColor[index],
+
+                      offset: pieChartConfig.offset[index],
+                    }))
+                  }
+                  cx={pieChartConfig.cx}
+                  cy={pieChartConfig.cy}
+                  innerRadius={pieChartConfig.innerRadius}
+                  outerRadius={pieChartConfig.outerRadius}
+                  paddingAngle={pieChartConfig.paddingAngle}
+                  dataKey={pieChartConfig.dataKey}
+                  nameKey={pieChartConfig.nameKey}
+                  activeIndex={[0, 1, 2, 3]}
+                  activeShape={(props: any) => {
+                    const RADIAN = Math.PI / 180;
+                    const { cx, cy, midAngle, fill, payload } = props;
+                    const cos = Math.cos(-midAngle * RADIAN);
+                    const sin = Math.sin(-midAngle * RADIAN);
+                    const offset = payload.offset;
+
+                    return (
+                      <g>
+                        <Sector
+                          {...props}
+                          fill={fill}
+                          transform={`translate(${offset * cos},${
+                            offset * sin
+                          })`}
+                        />
+                        <text
+                          x={cx + (props.outerRadius + offset) * cos}
+                          y={cy + (props.outerRadius + offset) * sin}
+                          fill={pieChartConfig.label.fill}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          style={{
+                            fontSize: pieChartConfig.label.fontSize,
+                            fontFamily: pieChartConfig.label.fontFamily,
+                          }}
+                        ></text>
+                      </g>
+                    );
+                  }}
+                  label={({
+                    cx,
+                    cy,
+                    midAngle,
+                    innerRadius,
+                    outerRadius,
+                    value,
+                    name,
+                    percentage,
+                    payload,
+                  }) => {
+                    const RADIAN = Math.PI / 180;
+                    const cos = Math.cos(-midAngle * RADIAN);
+                    const sin = Math.sin(-midAngle * RADIAN);
+                    const offset = payload.offset;
+
+                    // Calculate base position for the segment
+                    const radius =
+                      innerRadius + (outerRadius - innerRadius) * 0.5;
+                    let x = cx + radius * cos;
+                    let y = cy + radius * sin;
+
+                    // Apply offset for exploded effect
+                    x += offset * cos;
+                    y += offset * sin;
+
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fill={pieChartConfig.label.fill}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        style={{
+                          fontSize: pieChartConfig.label.fontSize,
+                          fontFamily: pieChartConfig.label.fontFamily,
+                        }}
+                      >
+                        <tspan x={x} dy="-0.5em">
+                          {percentage}
+                        </tspan>
+                        <tspan x={x} dy="1.2em">
+                          {name}
+                        </tspan>
+                      </text>
+                    );
+                  }}
+                  labelLine={false}
+                />
+              </PieChart>
             </div>
           </div>
         </div>
@@ -368,61 +504,71 @@ const Dashboard = () => {
               Quick Transfer
             </h2>
             <div className="min-w-[446px] max-h-[276px] bg-white rounded-2xl p-6">
-              <div className="">
-                <div className="flex items-center gap-4 overflow-hidden pb-4">
-                  <div
-                    className={`flex items-center ${
-                      isAnimating ? "animate-slideNext" : ""
-                    }`}
-                  >
-                    {transferUsers.length > 0 &&
-                      visibleUsers.map((user, index) => (
-                        <div
-                          key={user.name + index}
-                          className="flex flex-col items-center gap-2 w-[120px] cursor-pointer"
-                          onClick={() => handleUserSelect(user.name)}
-                        >
-                          <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
-                            <img
-                              src={user.image}
-                              alt={user.name}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="text-center">
-                            <p
-                              className={`text-[16px] text-[#232323] ${
-                                selectedUser === user.name
-                                  ? "font-extrabold"
-                                  : "font-medium"
-                              }`}
-                            >
-                              {user.name}
-                            </p>
-                            <p
-                              className={`text-[15px] text-[#718EBF] ${
-                                selectedUser === user.name
-                                  ? "font-semibold"
-                                  : ""
-                              }`}
-                            >
-                              {user.role}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                  <button
-                    onClick={handleNext}
-                    disabled={isAnimating}
-                    className="w-10 h-10 mr-2 bg-white rounded-full shadow-button flex items-center justify-center hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100"
-                  >
-                    <img src="/assets/arrow.png" alt="arrow" />
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg text-[#343C6A] font-bold">
+                    Quick Transfer
+                  </h2>
+                  <button className="text-[#343C6A] text-sm font-semibold">
+                    See all
                   </button>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 overflow-hidden">
+                    <div
+                      className={`flex items-center ${
+                        isAnimating ? "animate-slideNext" : ""
+                      }`}
+                    >
+                      {transferUsers.length > 0 &&
+                        visibleUsers.map((user, index) => (
+                          <div
+                            key={user.name + index}
+                            className="flex flex-col items-center gap-2 w-[120px] cursor-pointer"
+                            onClick={() => handleUserSelect(user.name)}
+                          >
+                            <div className="w-[60px] h-[60px] rounded-full overflow-hidden">
+                              <img
+                                src={user.image}
+                                alt={user.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="text-center">
+                              <p
+                                className={`text-[16px] text-[#232323] ${
+                                  selectedUser === user.name
+                                    ? "font-extrabold"
+                                    : "font-medium"
+                                }`}
+                              >
+                                {user.name}
+                              </p>
+                              <p
+                                className={`text-[15px] text-[#718EBF] ${
+                                  selectedUser === user.name
+                                    ? "font-semibold"
+                                    : ""
+                                }`}
+                              >
+                                {user.role}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                    <button
+                      onClick={handleNext}
+                      disabled={isAnimating}
+                      className="w-10 h-10 mr-2 bg-white rounded-full shadow-button flex items-center justify-center hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100"
+                    >
+                      <img src="/assets/arrow.png" alt="arrow" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-5">
                 <div className="flex flex-row gap-8 items-center">
                   <div className="">
                     <label className="text-[#718EBF] text-[15px]">
@@ -462,12 +608,72 @@ const Dashboard = () => {
           <h2 className="lg:hidden text-[22px] font-semibold text-[#343C6A] font-inter mb-6 mt-6 px-2">
             Balance History
           </h2>
-          <div className="w-full bg-white rounded-2xl p-6 max-h-[276px]">
-            <div className="h-[200px]">
-              <Line
-                options={balanceHistoryOptions}
-                data={balanceHistory || balanceHistoryData}
-              />
+          <div className="w-full bg-white rounded-2xl pt-6 max-h-[276px]">
+            <div className="h-[230px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={
+                    balanceHistory?.datasets?.[0]?.data.map((value, index) => ({
+                      name: balanceHistory.labels[index],
+                      value,
+                    })) ||
+                    balanceHistoryData.datasets[0].data.map((value, index) => ({
+                      name: balanceHistoryData.labels[index],
+                      value,
+                    }))
+                  }
+                  margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="5 5"
+                    stroke="#EAEAEA"
+                    vertical={true}
+                    horizontal={true}
+                  />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fill: "#718EBF",
+                      fontSize: 12,
+                      fontFamily: "Lato",
+                    }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{
+                      fill: "#718EBF",
+                      fontSize: 12,
+                      fontFamily: "Lato",
+                    }}
+                    domain={[0, 800]}
+                    ticks={[0, 200, 400, 600, 800]}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#1814F3"
+                    strokeWidth={2}
+                    dot={false}
+                    fill="rgba(24, 20, 243, 0.3)"
+                  />
+                  <defs>
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1814F3" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#1814F3" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="none"
+                    fill="url(#colorValue)"
+                    fillOpacity={1}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>

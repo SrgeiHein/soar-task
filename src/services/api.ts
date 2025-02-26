@@ -65,7 +65,21 @@ export const api = {
   },
 
   getWeeklyActivity: async (): Promise<WeeklyActivityData> => {
-    return weeklyData;
+    return {
+      data: [
+        { name: "Sat", deposit: 200, withdraw: 450 },
+        { name: "Sun", deposit: 150, withdraw: 320 },
+        { name: "Mon", deposit: 220, withdraw: 300 },
+        { name: "Tue", deposit: 300, withdraw: 450 },
+        { name: "Wed", deposit: 200, withdraw: 160 },
+        { name: "Thu", deposit: 250, withdraw: 350 },
+        { name: "Fri", deposit: 300, withdraw: 400 },
+      ],
+      colors: {
+        deposit: "#4D78FF",
+        withdraw: "#232323",
+      },
+    };
   },
 
   getExpenseStats: async (): Promise<ExpenseData> => {
@@ -78,26 +92,29 @@ export const api = {
 
   getTransferUsers: async (): Promise<TransferUser[]> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     return mockTransferUsers;
   },
 
-  sendTransfer: async (recipient: string, amount: string): Promise<TransferResponse> => {
+  sendTransfer: async (
+    recipient: string,
+    amount: string
+  ): Promise<TransferResponse> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Validate amount
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
       return {
         success: false,
-        message: "Invalid amount"
+        message: "Invalid amount",
       };
     }
 
     return {
       success: true,
-      message: `Successfully sent ${amount} to ${recipient}`
+      message: `Successfully sent ${amount} to ${recipient}`,
     };
-  }
+  },
 };
