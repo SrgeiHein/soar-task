@@ -68,7 +68,7 @@ export const barChartConfig = {
 };
 
 export const pieChartConfig = {
-  width: 400,
+  width: 300,
   height: 300,
   innerRadius: 0,
   outerRadius: 130,

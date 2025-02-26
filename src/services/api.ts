@@ -7,7 +7,7 @@ import {
   TransferUser,
   TransferResponse,
 } from "../types/dashboard";
-import { weeklyData, expenseData, balanceHistoryData } from "../mock/chartMock";
+import { expenseData, balanceHistoryData } from "../mock/chartMock";
 import { mockTransferUsers } from "../mock/transferMock";
 
 const mockCards: Card[] = [
@@ -53,6 +53,22 @@ const mockTransactions: Transaction[] = [
     amount: 5400,
     icon: "/assets/coin.png",
   },
+  {
+    id: "4",
+    type: "deposit",
+    title: "Deposit Paypal",
+    date: "25 January 2021",
+    amount: 2500,
+    icon: "/assets/paypal.png",
+  },
+  {
+    id: "5",
+    type: "deposit",
+    title: "Jemi Wilson",
+    date: "21 January 2021",
+    amount: 5400,
+    icon: "/assets/coin.png",
+  },
 ];
 
 export const api = {
@@ -92,7 +108,7 @@ export const api = {
 
   getTransferUsers: async (): Promise<TransferUser[]> => {
     // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     return mockTransferUsers;
   },
 
@@ -101,7 +117,7 @@ export const api = {
     amount: string
   ): Promise<TransferResponse> => {
     // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Validate amount
     const numAmount = parseFloat(amount);

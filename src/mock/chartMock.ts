@@ -195,11 +195,67 @@ export const pieOptions = {
   radius: "100%",
 };
 
+export type PageDataType = {
+  name: string;
+  value: number;
+};
+
+export const pageData: PageDataType[] = [
+  {
+    name: "Jan",
+    value: 300,
+  },
+  {
+    name: "Feb",
+    value: 420,
+  },
+  {
+    name: "Mar",
+    value: 350,
+  },
+  {
+    name: "Apr",
+    value: 500,
+  },
+  {
+    name: "May",
+    value: 380,
+  },
+  {
+    name: "Jun",
+    value: 450,
+  },
+  {
+    name: "Jul",
+    value: 200,
+  },
+  {
+    name: "Aug",
+    value: 300,
+  },
+  {
+    name: "Sep",
+    value: 450,
+  },
+  {
+    name: "Oct",
+    value: 750,
+  },
+  {
+    name: "Nov",
+    value: 200,
+  },
+  {
+    name: "Dec",
+    value: 580,
+  },
+];
+
 export const balanceHistoryData = {
-  labels: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
+  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   datasets: [
     {
-      data: [200, 300, 450, 750, 200, 550, 600],
+      data: [300, 420, 350, 500, 380, 450, 200, 300, 450, 750, 200, 580],
       borderColor: "#1814F3",
       tension: 0.4,
       fill: true,

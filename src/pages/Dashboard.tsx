@@ -8,7 +8,6 @@ import {
   ExpenseData,
   BalanceHistoryData,
   TransferUser,
-  TransferResponse,
 } from "../types/dashboard";
 import { api } from "../services/api";
 import {
@@ -25,8 +24,15 @@ import {
   LineChart,
   Line,
   Area,
+  AreaChart,
+  Tooltip,
 } from "recharts";
-import { weeklyData, expenseData, balanceHistoryData } from "../mock/chartMock";
+import {
+  weeklyData,
+  expenseData,
+  balanceHistoryData,
+  pageData,
+} from "../mock/chartMock";
 import { mockTransferUsers } from "../mock/transferMock";
 import { barChartConfig, pieChartConfig } from "../config/chartConfig";
 
@@ -130,7 +136,7 @@ const Dashboard = () => {
   return (
     <div className=" p-6 bg-[#F3F3F3] h-full overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col lg:flex-row gap-[30px] pb-4">
-        <div className="w-full lg:flex-[2]">
+        <div className="w-full">
           <div className="flex items-center justify-between mb-6 px-2">
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               My Cards
@@ -249,43 +255,45 @@ const Dashboard = () => {
               Recent Transaction
             </h2>
           </div>
-          <div className="h-[235px] w-full lg:min-w-[350px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
-            <div className="space-y-4">
-              {transactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center gap-5 mb-5"
-                >
-                  <img
-                    src={transaction.icon}
-                    alt={transaction.title}
-                    className="w-12 h-12"
-                  />
+          <div className="h-[235px] w-full lg:min-w-[380px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
+            <div className="h-full hover-scrollbar">
+              <div className="space-y-4">
+                {transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center gap-5 mb-5 last:mb-0"
+                  >
+                    <img
+                      src={transaction.icon}
+                      alt={transaction.title}
+                      className="w-12 h-12 flex-shrink-0"
+                    />
 
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-semibold text-[16px] text-[#232323]">
-                          {transaction.title}
-                        </p>
-                        <p className="font-[15px] text-[#718EBF]">
-                          {transaction.date}
-                        </p>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-semibold text-[16px] text-[#232323]">
+                            {transaction.title}
+                          </p>
+                          <p className="font-[15px] text-[#718EBF]">
+                            {transaction.date}
+                          </p>
+                        </div>
+                        <span
+                          className={`${
+                            transaction.amount > 0
+                              ? "text-[#41D4A8]"
+                              : "text-[#FF4B4A]"
+                          } font-semibold`}
+                        >
+                          {transaction.amount > 0 ? "+" : ""}$
+                          {Math.abs(transaction.amount).toLocaleString()}
+                        </span>
                       </div>
-                      <span
-                        className={`${
-                          transaction.amount > 0
-                            ? "text-[#41D4A8]"
-                            : "text-[#FF4B4A]"
-                        } font-semibold`}
-                      >
-                        {transaction.amount > 0 ? "+" : ""}$
-                        {Math.abs(transaction.amount).toLocaleString()}
-                      </span>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -367,7 +375,7 @@ const Dashboard = () => {
           </div>
 
           <div className="lg:flex-1 bg-white rounded-2xl pl-6 pt-6">
-            <div className="h-[322px] flex items-center justify-center">
+            <div className="h-[322px]  flex items-center justify-center">
               <PieChart
                 width={pieChartConfig.width}
                 height={pieChartConfig.height}
@@ -503,16 +511,8 @@ const Dashboard = () => {
             <h2 className="lg:hidden text-[22px] font-semibold text-[#343C6A] font-inter mb-6 px-2">
               Quick Transfer
             </h2>
-            <div className="min-w-[446px] max-h-[276px] bg-white rounded-2xl p-6">
+            <div className="min-w-[446px] min-h-[276px] bg-white rounded-2xl py-10 px-6">
               <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg text-[#343C6A] font-bold">
-                    Quick Transfer
-                  </h2>
-                  <button className="text-[#343C6A] text-sm font-semibold">
-                    See all
-                  </button>
-                </div>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-4 overflow-hidden">
                     <div
@@ -608,20 +608,11 @@ const Dashboard = () => {
           <h2 className="lg:hidden text-[22px] font-semibold text-[#343C6A] font-inter mb-6 mt-6 px-2">
             Balance History
           </h2>
-          <div className="w-full bg-white rounded-2xl pt-6 max-h-[276px]">
-            <div className="h-[230px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={
-                    balanceHistory?.datasets?.[0]?.data.map((value, index) => ({
-                      name: balanceHistory.labels[index],
-                      value,
-                    })) ||
-                    balanceHistoryData.datasets[0].data.map((value, index) => ({
-                      name: balanceHistoryData.labels[index],
-                      value,
-                    }))
-                  }
+          <div className="w-full bg-white rounded-2xl pt-6 min-h-[276px]">
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart
+                  data={pageData}
                   margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
                 >
                   <CartesianGrid
@@ -639,6 +630,9 @@ const Dashboard = () => {
                       fontSize: 12,
                       fontFamily: "Lato",
                     }}
+                    interval={0}
+                    angle={0}
+                    textAnchor="middle"
                   />
                   <YAxis
                     axisLine={false}
@@ -651,28 +645,26 @@ const Dashboard = () => {
                     domain={[0, 800]}
                     ticks={[0, 200, 400, 600, 800]}
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#1814F3"
-                    strokeWidth={2}
-                    dot={false}
-                    fill="rgba(24, 20, 243, 0.3)"
-                  />
+                  <Tooltip />
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#1814F3" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#1814F3" stopOpacity={0.1} />
+                      <stop offset="5%" stopColor="#0066FF" stopOpacity={0.4} />
+                      <stop
+                        offset="95%"
+                        stopColor="#0066FF"
+                        stopOpacity={0.05}
+                      />
                     </linearGradient>
                   </defs>
                   <Area
                     type="monotone"
                     dataKey="value"
-                    stroke="none"
+                    stroke="#0066FF"
+                    strokeWidth={2}
                     fill="url(#colorValue)"
                     fillOpacity={1}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>

@@ -33,3 +33,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+@layer utilities {
+  /* Hide scrollbar by default */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom scrollbar on hover */
+  .hover-scrollbar {
+    overflow-y: auto;
+  }
+  
+  .hover-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    background: transparent;
+  }
+  
+  .hover-scrollbar::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .hover-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(113, 142, 191, 0.2);
+  }
+  
+  .hover-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(113, 142, 191, 0.4);
+  }
+}
