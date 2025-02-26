@@ -84,7 +84,7 @@ export const barOptions = {
     },
     y: {
       grid: {
-        color: "#EAEAEA",
+        color: "#DFE5EE",
         borderDash: [5, 5],
         drawBorder: false,
       },
@@ -145,4 +145,77 @@ export const pieOptions = {
   },
   rotation: 40,
   radius: "100%",
+};
+
+export const balanceHistoryData = {
+  labels: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
+  datasets: [
+    {
+      data: [200, 300, 450, 750, 200, 550, 600],
+      borderColor: "#1814F3",
+      tension: 0.4,
+      fill: true,
+      backgroundColor: "rgba(24, 20, 243, 0.3)",
+      pointRadius: 0,
+      borderWidth: 2,
+    },
+  ],
+};
+
+export const balanceHistoryOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+    tooltip: {
+      enabled: false,
+    },
+    datalabels: {
+      display: false,
+    },
+  },
+  elements: {
+    line: {
+      fill: true,
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        color: "#EAEAEA",
+        borderDash: [5, 5],
+      },
+      ticks: {
+        font: {
+          size: 12,
+          family: "Lato",
+        },
+        color: "#718EBF",
+      },
+      border: {
+        display: false,
+      },
+    },
+    y: {
+      grid: {
+        color: "#EAEAEA",
+        borderDash: [5, 5],
+      },
+      ticks: {
+        font: {
+          size: 12,
+          family: "Lato",
+        },
+        color: "#718EBF",
+      },
+      min: 0,
+      max: 800,
+      stepSize: 200,
+      border: {
+        display: false,
+      },
+    },
+  },
 };
