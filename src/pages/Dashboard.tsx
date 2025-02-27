@@ -247,7 +247,7 @@ const Dashboard = () => {
               Recent Transaction
             </h2>
           </div>
-          <div className="h-[235px] w-full lg:min-w-[380px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
+          <div className="h-[235px] w-full lg:min-w-[390px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
             <div className="h-full hover-scrollbar">
               <div className="space-y-4">
                 {transactions.map((transaction) => (
@@ -305,7 +305,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row lg:gap-[30px]">
+        <div className="flex flex-col lg:flex-row lg:gap-[40px]">
           <div className="lg:flex-[2] bg-white rounded-2xl pl-6 pt-6">
             <div className="h-[322px]">
               <ResponsiveContainer width="100%" height="100%">

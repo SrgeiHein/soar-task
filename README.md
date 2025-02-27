@@ -21,6 +21,13 @@ A modern React-based financial dashboard application featuring a comprehensive d
 - Profile image upload
 - Form validation using React Hook Form
 
+### Performance Optimizations
+
+- Lazy loading for main pages (Dashboard and Settings)
+- Code splitting for better initial load time
+- Loading indicators for better user experience
+- Optimized bundle size through dynamic imports
+
 ## Prerequisites
 
 Before you begin, ensure you have installed:
@@ -66,9 +73,10 @@ This creates an optimized production build in the `build` folder.
 ```
 src/
   ├── components/     # Reusable components
+  │   └── LoadingSpinner.tsx  # Loading indicator for lazy-loaded components
   ├── pages/
-  │   ├── Dashboard.tsx  # Main dashboard component
-  │   └── Settings.tsx   # Settings management
+  │   ├── Dashboard.tsx  # Main dashboard component (lazy loaded)
+  │   └── Settings.tsx   # Settings management (lazy loaded)
   ├── types/         # TypeScript type definitions
   ├── services/      # API services
   ├── mock/          # Mock data for development
@@ -95,7 +103,3 @@ The settings page allows users to:
 - Upload profile pictures
 - Manage preferences
 - Configure security settings
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
