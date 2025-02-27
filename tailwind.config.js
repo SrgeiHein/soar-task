@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        xl2: "1300px",
+      },
       colors: {
         "sidebar-bg": "#f8f9fa",
         "active-link": "#3b82f6",
@@ -29,15 +32,15 @@ module.exports = {
           "100%": { transform: "translateX(0)" },
         },
         fadeInNew: {
-          '0%': { opacity: '0', transform: 'translateY(-10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         fadeIn: "fadeIn 0.3s ease-in-out",
         slideNext: "slideNext 0.3s ease-in-out",
         slidePrev: "slidePrev 0.3s ease-in-out",
-        'fade-in': 'fadeInNew 0.3s ease-out forwards',
+        "fade-in": "fadeInNew 0.3s ease-out forwards",
       },
     },
   },
