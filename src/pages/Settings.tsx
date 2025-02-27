@@ -46,7 +46,7 @@ const Settings = () => {
   ];
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#F3F3F3]">
       <div className="bg-white rounded-[20px]">
         {/* Tabs */}
         <div className="md:px-8 border-b border-gray-100">

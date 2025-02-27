@@ -6,7 +6,6 @@ import {
   Transaction,
   WeeklyActivityData,
   ExpenseData,
-  BalanceHistoryData,
   TransferUser,
 } from "../types/dashboard";
 import { api } from "../services/api";
@@ -21,18 +20,11 @@ import {
   PieChart,
   Pie,
   Sector,
-  LineChart,
-  Line,
   Area,
   AreaChart,
   Tooltip,
 } from "recharts";
-import {
-  weeklyData,
-  expenseData,
-  balanceHistoryData,
-  pageData,
-} from "../mock/chartMock";
+import { weeklyData, expenseData, pageData } from "../mock/chartMock";
 import { mockTransferUsers } from "../mock/transferMock";
 import { barChartConfig, pieChartConfig } from "../config/chartConfig";
 
@@ -44,8 +36,7 @@ const Dashboard = () => {
   const [weeklyActivity, setWeeklyActivity] =
     useState<WeeklyActivityData | null>(null);
   const [expenseStats, setExpenseStats] = useState<ExpenseData | null>(null);
-  const [balanceHistory, setBalanceHistory] =
-    useState<BalanceHistoryData | null>(null);
+
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>("");
   const [showSuccess, setShowSuccess] = useState(false);
@@ -61,14 +52,12 @@ const Dashboard = () => {
           transactionsData,
           weeklyData,
           expenseData,
-          balanceData,
           usersData,
         ] = await Promise.all([
           api.getCards(),
           api.getRecentTransactions(),
           api.getWeeklyActivity(),
           api.getExpenseStats(),
-          api.getBalanceHistory(),
           api.getTransferUsers(),
         ]);
 
@@ -76,7 +65,6 @@ const Dashboard = () => {
         setTransactions(transactionsData);
         setWeeklyActivity(weeklyData);
         setExpenseStats(expenseData);
-        setBalanceHistory(balanceData);
         setTransferUsers(usersData);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
