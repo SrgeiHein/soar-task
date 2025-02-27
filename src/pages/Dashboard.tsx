@@ -124,7 +124,7 @@ const Dashboard = () => {
   return (
     <div className=" p-6 bg-[#F3F3F3] h-full overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col lg:flex-row gap-[30px] pb-4">
-        <div className="w-full">
+        <div className="w-full lg:flex-[2]">
           <div className="flex items-center justify-between mb-6 px-2">
             <h2 className="text-[22px] font-semibold text-[#343C6A]">
               My Cards
@@ -137,107 +137,105 @@ const Dashboard = () => {
             </h2>
           </div>
 
-          <div className="">
-            <div className="flex overflow-x-auto pb-4 gap-[30px] snap-x snap-mandatory hover-scrollbar lg:max-w-[730px] max-w-full">
-              <div className="flex gap-[30px] w-full pr-[-20px]">
-                {cards.map((card) => (
-                  <div
-                    key={card.id}
-                    className={`lg:min-w-[350px] min-w-full h-[235px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col snap-start ${
-                      card.isLight
-                        ? "bg-white border border-[#DFEAF2]"
-                        : "bg-gradient-to-r from-[#5B5A6F] to-black"
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-8 px-6">
-                      <div>
-                        <p
-                          className={`text-[12px] mb-0 ${
-                            card.isLight ? "text-[#718EBF]" : "text-white"
-                          }`}
-                        >
-                          Balance
-                        </p>
-                        <p
-                          className={`text-[20px] font-semibold ${
-                            card.isLight ? "text-[#343C6A]" : "text-white"
-                          }`}
-                        >
-                          ${card.balance.toLocaleString()}
-                        </p>
-                      </div>
-                      <img
-                        src={
-                          card.isLight
-                            ? "/assets/Chip_Card2.png"
-                            : "/assets/Chip_Card.png"
-                        }
-                        alt="Chip"
-                        className="w-8 h-8"
-                      />
-                    </div>
-                    <div className="flex justify-stretch items-start mb-7 px-6">
-                      <div>
-                        <p
-                          className={`text-[12px] ${
-                            card.isLight
-                              ? "text-[#718EBF]"
-                              : "text-white opacity-70"
-                          }`}
-                        >
-                          CARD HOLDER
-                        </p>
-                        <p
-                          className={`font-semibold text-[15px] mt-0 ${
-                            card.isLight ? "text-[#343C6A]" : "text-white"
-                          }`}
-                        >
-                          {card.cardHolder}
-                        </p>
-                      </div>
-                      <div>
-                        <p
-                          className={`text-[12px] ${
-                            card.isLight
-                              ? "text-[#718EBF]"
-                              : "text-white opacity-70"
-                          }`}
-                        >
-                          VALID THRU
-                        </p>
-                        <p
-                          className={`font-semibold text-[15px] mt-0 ${
-                            card.isLight ? "text-[#343C6A]" : "text-white"
-                          }`}
-                        >
-                          {card.validThru}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`flex items-center justify-between px-6 flex-grow py-4 ${
-                        card.isLight
-                          ? "bg-white border-t border-[#DFEAF2]"
-                          : "bg-gradient-to-b from-white/15 to-transparent"
-                      }`}
-                    >
+          <div className="flex overflow-x-auto pb-4 gap-[30px] snap-x snap-mandatory hover-scrollbar max-w-full">
+            <div className="flex gap-[30px] w-full">
+              {cards.map((card) => (
+                <div
+                  key={card.id}
+                  className={`min-w-full xl2:min-w-[calc(50%-15px)] lg:min-w-[calc(70%-15px)] md:min-w-[calc(60%-15px)]   h-[235px] rounded-2xl pt-6 text-white overflow-hidden font-lato flex flex-col snap-start ${
+                    card.isLight
+                      ? "bg-white border border-[#DFEAF2]"
+                      : "bg-gradient-to-r from-[#5B5A6F] to-black"
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-8 px-6">
+                    <div>
                       <p
-                        className={`font-semibold text-[22px] ${
+                        className={`text-[12px] mb-0 ${
+                          card.isLight ? "text-[#718EBF]" : "text-white"
+                        }`}
+                      >
+                        Balance
+                      </p>
+                      <p
+                        className={`text-[20px] font-semibold ${
                           card.isLight ? "text-[#343C6A]" : "text-white"
                         }`}
                       >
-                        {card.cardNumber}
+                        ${card.balance.toLocaleString()}
                       </p>
-                      {card.isLight ? (
-                        <CardIcon2 className="opacity-50" />
-                      ) : (
-                        <CardIcon className="opacity-50" />
-                      )}
+                    </div>
+                    <img
+                      src={
+                        card.isLight
+                          ? "/assets/Chip_Card2.png"
+                          : "/assets/Chip_Card.png"
+                      }
+                      alt="Chip"
+                      className="w-8 h-8"
+                    />
+                  </div>
+                  <div className="flex justify-stretch items-start mb-7 px-6">
+                    <div>
+                      <p
+                        className={`text-[12px] ${
+                          card.isLight
+                            ? "text-[#718EBF]"
+                            : "text-white opacity-70"
+                        }`}
+                      >
+                        CARD HOLDER
+                      </p>
+                      <p
+                        className={`font-semibold text-[15px] mt-0 ${
+                          card.isLight ? "text-[#343C6A]" : "text-white"
+                        }`}
+                      >
+                        {card.cardHolder}
+                      </p>
+                    </div>
+                    <div>
+                      <p
+                        className={`text-[12px] ${
+                          card.isLight
+                            ? "text-[#718EBF]"
+                            : "text-white opacity-70"
+                        }`}
+                      >
+                        VALID THRU
+                      </p>
+                      <p
+                        className={`font-semibold text-[15px] mt-0 ${
+                          card.isLight ? "text-[#343C6A]" : "text-white"
+                        }`}
+                      >
+                        {card.validThru}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  <div
+                    className={`flex items-center justify-between px-6 flex-grow py-4 ${
+                      card.isLight
+                        ? "bg-white border-t border-[#DFEAF2]"
+                        : "bg-gradient-to-b from-white/15 to-transparent"
+                    }`}
+                  >
+                    <p
+                      className={`font-semibold text-[22px] ${
+                        card.isLight ? "text-[#343C6A]" : "text-white"
+                      }`}
+                    >
+                      {card.cardNumber}
+                    </p>
+                    {card.isLight ? (
+                      <CardIcon2 className="opacity-50" />
+                    ) : (
+                      <CardIcon className="opacity-50" />
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -247,7 +245,7 @@ const Dashboard = () => {
               Recent Transaction
             </h2>
           </div>
-          <div className="h-[235px] w-full lg:min-w-[390px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
+          <div className="h-[235px] w-full lg:min-w-[340px] rounded-2xl bg-white border border-[#DFEAF2] p-7 font-lato">
             <div className="h-full hover-scrollbar">
               <div className="space-y-4">
                 {transactions.map((transaction) => (
@@ -305,7 +303,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row lg:gap-[40px]">
+        <div className="flex flex-col lg:flex-row lg:gap-[30px]">
           <div className="lg:flex-[2] bg-white rounded-2xl pl-6 pt-6">
             <div className="h-[322px]">
               <ResponsiveContainer width="100%" height="100%">
