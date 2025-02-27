@@ -26,6 +26,14 @@ const mockCards: Card[] = [
     cardNumber: "3778 **** **** 1234",
     isLight: true,
   },
+  {
+    id: "3",
+    balance: 5756,
+    cardHolder: "Eddy Cusuma",
+    validThru: "12/22",
+    cardNumber: "3778 **** **** 1234",
+    isLight: true,
+  },
 ];
 
 const mockTransactions: Transaction[] = [
