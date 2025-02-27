@@ -1,46 +1,101 @@
-# Getting Started with Create React App
+# Financial Dashboard Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern React-based financial dashboard application featuring a comprehensive dashboard and user settings management.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### Dashboard
 
-### `npm start`
+- Financial cards overview
+- Transaction history
+- Weekly activity charts
+- Expense statistics with interactive charts
+- Money transfer functionality
+- Real-time data visualization using Recharts
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Settings
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Profile management
+- User preferences configuration
+- Security settings
+- Profile image upload
+- Form validation using React Hook Form
 
-### `npm test`
+## Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Before you begin, ensure you have installed:
 
-### `npm run build`
+- Node.js (version 14.0.0 or higher)
+- npm (usually comes with Node.js)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+git clone <your-repository-url>
+cd <project-directory>
+```
 
-### `npm run eject`
+2. Install dependencies:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+npm install
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Running the Application
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Development Mode
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+npm start
+```
 
-## Learn More
+This will run the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Production Build
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm run build
+```
+
+This creates an optimized production build in the `build` folder.
+
+## Project Structure
+
+```
+src/
+  ├── components/     # Reusable components
+  ├── pages/
+  │   ├── Dashboard.tsx  # Main dashboard component
+  │   └── Settings.tsx   # Settings management
+  ├── types/         # TypeScript type definitions
+  ├── services/      # API services
+  ├── mock/          # Mock data for development
+  └── config/        # Configuration files
+```
+
+## Usage
+
+### Dashboard Page
+
+The dashboard provides:
+
+- Financial overview cards
+- Interactive charts for expense tracking
+- Transaction history
+- Money transfer functionality
+- Weekly activity monitoring
+
+### Settings Page
+
+The settings page allows users to:
+
+- Edit profile information
+- Upload profile pictures
+- Manage preferences
+- Configure security settings
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

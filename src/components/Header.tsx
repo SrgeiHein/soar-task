@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isSidebarOpen }) => {
             </div>
             <div className="h-10 w-10 rounded-full overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=40&h=40&q=80"
+                src="/assets/profile.png"
                 alt="Profile"
                 className="w-full h-full object-cover"
               />

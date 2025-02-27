@@ -14,12 +14,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F5F7FA]">
+    <div className="flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <div className="flex-1">
         <Header onMenuClick={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        <main className="p-4 lg:p-0">{children}</main>
+        <main className="">{children}</main>
       </div>
     </div>
   );
