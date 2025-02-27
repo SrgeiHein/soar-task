@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import { useForm } from "react-hook-form";
 import { FormInputs } from "../types/form";
 
-const Settings = () => {
+const Settings: FC = () => {
   const [activeTab, setActiveTab] = useState("edit-profile");
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>(
@@ -291,8 +291,8 @@ const Settings = () => {
 
         {/* Preferences Content */}
         {activeTab === "preferences" && (
-          <div className="py-6 h-full">
-            <div className="max-w-3xl">
+          <div className="py-6 h-full min-h-[calc(100vh-200px)]">
+            <div className="max-w-3xl h-full p-6">
               <h3 className="text-lg font-semibold text-[#232323] mb-6">
                 Preferences
               </h3>
@@ -303,8 +303,8 @@ const Settings = () => {
 
         {/* Security Content */}
         {activeTab === "security" && (
-          <div className="py-6 h-full">
-            <div className="max-w-3xl ">
+          <div className="py-6 h-full min-h-[calc(100vh-200px)]">
+            <div className="max-w-3xl h-full p-6">
               <h3 className="text-lg font-semibold text-[#232323] mb-6">
                 Security Settings
               </h3>
